@@ -252,9 +252,10 @@ namespace LTS.WEBUI.Controllers
         public async Task<IActionResult> ActivateUser(KullaniciAktif model)
         {
             var user = await userManager.FindByIdAsync(model.UserId);
-            KullaniciAktif kullanici = new KullaniciAktif();
+            
             if (user != null && user.GeciciSifre == model.Password)
             {
+                KullaniciAktif kullanici = new KullaniciAktif();
                 kullanici.UserId = model.UserId;
                 kullanici.ResetCode = model.ResetCode;
                 kullanici.EmailCode = model.EmailCode;
