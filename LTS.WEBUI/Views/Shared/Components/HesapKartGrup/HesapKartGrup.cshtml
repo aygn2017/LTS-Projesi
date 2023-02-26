@@ -1,0 +1,49 @@
+﻿@model List<HesapKartGrupDTO>
+
+<div class="table-responsive">
+    <table id="tabloListele" class="table mytable mt-5 align-middle">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Tip Adı</th>
+                <th scope="col">İşlemler</th>
+                <th scope="col"><button id="hesapKartGrupEkleModal" class="btn btn-outline-success">Ekle</button></th>
+            </tr>
+        </thead>
+        <tbody id="mytabletbody">
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.KartGrupId</td>
+                    <td>@item.GrupAdi</td>
+                    <td>
+                        <div class="btn-group">
+                            <button class="btn btn-outline-warning btnGuncelle hesapKartGrupGuncelleModal">Güncelle</button>
+                            <button class="btn btn-outline-danger btnSil hesapKartGrupSilModal">Sil</button>
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+<script>
+    $('#hesapKartGrupEkleModal').click(function () {
+        $('#myModal .modal-body').html("<form><div class='form-floating mb-3'><input type='text' class='form-control' id='floatingInput' placeholder=' ' name='GrupAdi'><label for='floatingInput'> Hesap Kart Grup Adı </label></div></form>");
+        $('#myModal .modal-footer').html("<button type='button' id='hesapKartGrupEkle' class='btn btn-outline-success'>Save changes</button>");
+        hesapkartgruptanimlari.Ekle();
+        $('#myModal').modal('show');
+    });
+    $('.hesapKartGrupGuncelleModal').click(function () {
+        $('#myModal .modal-body').html("<form><div class='form-floating mb-3'><input type='hidden' name='KartGrupId' value='" + $(this).parents('tr').find('td:eq(0)').text() + "'><input type='text' value='" + $(this).parents('tr').find('td:eq(1)').text() + "' class='form-control' id='floatingInput' placeholder=' ' name='GrupAdi'><label for='floatingInput'> Hesap Kart Grup Adı </label></div></form>");
+        $('#myModal .modal-footer').html("<button type='button' id='hesapKartGrupGuncelle' class='btn btn-outline-success'>Update</button>");
+        hesapkartgruptanimlari.Guncelle();
+        $('#myModal').modal('show');
+    });
+    $('.hesapKartGrupSilModal').click(function () {
+        $('#myModal .modal-body').html("<form><div class='form-floating mb-3'><input type='hidden' name='KartGrupId' value='" + $(this).parents('tr').find('td:eq(0)').text() + "'><input type='text' disabled value='" + $(this).parents('tr').find('td:eq(1)').text() + "' class='form-control' id='floatingInput' placeholder=' ' name='GrupAdi'><label for='floatingInput'> Hesap Kart Grup Adı </label></div></form>");
+        $('#myModal .modal-footer').html("<button type='button' id='hesapKartGrupSil' class='btn btn-outline-danger'>Delete</button>");
+        hesapkartgruptanimlari.Sil();
+        $('#myModal').modal('show');
+    });
+</script>

@@ -1,0 +1,63 @@
+﻿@model List<HesapUser>
+
+<div class="table-responsive">
+    <table id="tabloListele" class="table mytable mt-5 align-middle">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">T.C.</th>
+                <th scope="col">Kullanıcı Adı</th>
+                <th scope="col">Email</th>
+                <th scope="col">Aktif</th>
+                <th scope="col">İşlemler</th>
+                <th scope="col"><button id="KullaniciEkleModal" class="btn btn-outline-success">Ekle</button></th>
+            </tr>
+        </thead>
+        <tbody id="mytabletbody">
+            @{
+                int sira = 1;
+                foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@sira</td>
+                        <td>@item.Tc</td>
+                        <td>@item.UserName</td>
+                        <td>@item.Email</td>
+                        @if (item.EmailConfirmed){
+                            <td>Aktif</td>
+                        }else{
+                            <td>Pasif</td>
+                        }
+                        <td>
+                            <div class="btn-group">
+                                <button class="btn btn-outline-warning btnGuncelle KullaniciGuncelleModal">Güncelle</button>
+                                <button class="btn btn-outline-danger btnSil KullaniciSilModal">Sil</button>
+                            </div>
+                        </td>
+                    </tr>
+                    sira++;
+                }
+             }
+        </tbody>
+    </table>
+</div>
+<script>
+    $('#KullaniciEkleModal').click(function () {
+        $('#myModal .modal-body').html("<form><div class='form-floating mb-3'><input type='text' class='form-control' id='floatingInput' placeholder=' ' name='UserName'><label for='floatingInput'> Kullanıcı Adı </label></div><div class='form-floating mb-3'><input type='text' class='form-control' id='floatingInput' placeholder=' ' name='Email'><label for='floatingInput'> Email </label></div></form>");
+        $('#myModal .modal-footer').html("<button type='button' id='KullaniciEkle' class='btn btn-outline-success'>Save changes</button>");
+        kullaniciislemleri.Ekle();
+        $('#myModal').modal('show');
+    });
+    $('.KullaniciGuncelleModal').click(function () {
+        $('#myModal .modal-body').html("<form><div class='form-floating mb-3'><input type='hidden' name='Email' value='" + $(this).parents('tr').find('td:eq(3)').text() + "'><input type='text' value='" + $(this).parents('tr').find('td:eq(1)').text() + "' class='form-control' id='floatingInput' placeholder=' ' name='Tc'><label for='floatingInput'> T.C. </label></div><div class='form-floating mb-3'><input type='text' value='" + $(this).parents('tr').find('td:eq(2)').text() + "' class='form-control' id='floatingInput' placeholder=' ' name='Ad'><label for='floatingInput'> Kullanıcı Adı. </label></div></form>");
+        $('#myModal .modal-footer').html("<button type='button' id='KullaniciGuncelle' class='btn btn-outline-success'>Update</button>");
+        kullaniciislemleri.Guncelle();
+        $('#myModal').modal('show');
+    });
+    $('.KullaniciSilModal').click(function () {
+        $('#myModal .modal-body').html("<form><div class='form-floating mb-3'><input disabled type='text' value='" + $(this).parents('tr').find('td:eq(3)').text() + "' class='form-control' id='floatingInput' placeholder=' ' name='Email'><label for='floatingInput'> Email </label></div><div class='form-floating mb-3'><input type='hidden' name='Email' value='" + $(this).parents('tr').find('td:eq(3)').text() + "'><input disabled type='text' value='" + $(this).parents('tr').find('td:eq(1)').text() + "' class='form-control' id='floatingInput' placeholder=' ' name='Tc'><label for='floatingInput'> T.C. </label></div><div class='form-floating mb-3'><input type='text' value='" + $(this).parents('tr').find('td:eq(2)').text() + "' class='form-control' id='floatingInput' placeholder=' ' name='Ad' disabled><label for='floatingInput'> Kullanıcı Adı. </label></div></form>");
+        $('#myModal .modal-footer').html("<button type='button' id='KullaniciSil' class='btn btn-outline-danger'>Delete</button>");
+        kullaniciislemleri.Sil();
+        $('#myModal').modal('show');
+    });
+</script>

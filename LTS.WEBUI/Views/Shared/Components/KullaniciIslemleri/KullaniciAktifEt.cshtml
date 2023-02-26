@@ -1,0 +1,61 @@
+﻿@model KullaniciAktif
+
+
+<div class="card">
+    <div class="card-header text-center">
+        Üyeliğini Aktif Et
+    </div>
+    <div class="card-body">
+        <form id="ActivateUserForm">
+            <input type="hidden" name="UserId" value="@Model.UserId" />
+            <input type="hidden" name="ResetCode" value="@Model.ResetCode" />
+            <input type="hidden" name="EmailCode" value="@Model.EmailCode" />
+            <div class="text-danger" asp-validation-summary="All"> </div>
+            <div class="form-floating mb-3">
+                <input value="@Model.Password" type="password" class="form-control" id="Password" name="Password" placeholder=".">
+                <label>Parola</label>
+            </div>
+            <div class="form-floating mb-3">
+                <input value="@Model.RPassword" type="password" class="form-control" id="RePassword" name="RPassword" placeholder=".">
+                <label>Tekrar-Parola</label>
+            </div>
+            <div class="col-md-12">
+                <button id="KullaniciAktifEt" type="button" value="Save" class="btn btn-outline-success w-100"> Kaydet</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="toast-container position-fixed bottom-0 end-0 p-3">
+  <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="5000">
+    <div class="toast-header">
+      <strong class="me-auto">Başarılı</strong>
+      <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+    </div>
+    <div class="toast-body">
+      Hesabınız aktif hale getirildi.
+    </div>
+  </div>
+</div>
+<script>
+    $('#KullaniciAktifEt').click(function () {
+        var data = decodeURIComponent($("#ActivateUserForm").serialize());
+        $.ajax({
+            url: location.origin + "/Account/ActivateUserNewPassword",
+            data: data,
+            type: "POST",
+            success: function (res) {
+                if (res.result) {
+                    new bootstrap.Toast(document.getElementById('liveToast')).show();
+                    setTimeout(function() {
+                        window.location.href = location.origin;
+                    }, 7000);
+                } else {
+                    swal("Parola Kurallara Uygun Girilmeli!", "", "error");
+                }
+            }, error: function (hata, ajaxoptions, throwerror) {
+                alert("Hata :" + hata.status + " " + throwerror + " " + hata.responseText);
+            }
+        });
+    });
+</script>

@@ -1,0 +1,49 @@
+﻿@model List<HesapKartTipDTO>
+
+<div class="table-responsive">
+    <table id="tabloListele" class="table mytable mt-5 align-middle">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Tip Adı</th>
+                <th scope="col">İşlemler</th>
+                <th scope="col"><button id="hesapTipEkleModal" class="btn btn-outline-success">Ekle</button></th>
+            </tr>
+        </thead>
+        <tbody id="mytabletbody">  
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.TipID</td>
+                    <td>@item.TipAdi</td>
+                    <td>
+                        <div class="btn-group">
+                            <button class="btn btn-outline-warning btnGuncelle hesapTipGuncelleModal">Güncelle</button>
+                            <button class="btn btn-outline-danger btnSil hesapTipSilModal">Sil</button>
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+    <script>
+         $('#hesapTipEkleModal').click(function(){
+            $('#myModal .modal-body').html("<form><div class='form-floating mb-3'><input type='text' class='form-control' id='floatingInput' placeholder=' ' name='TipAdi'><label for='floatingInput'> Hesap Kart Tip Adı </label></div></form>");
+            $('#myModal .modal-footer').html("<button type='button' id='hesapTipEkle' class='btn btn-outline-success'>Save changes</button>");
+            hesapkarttiptanimlari.Ekle();
+            $('#myModal').modal('show');
+        });
+        $('.hesapTipGuncelleModal').click(function () {
+            $('#myModal .modal-body').html("<form><div class='form-floating mb-3'><input type='hidden' name='TipID' value='" + $(this).parents('tr').find('td:eq(0)').text() + "'><input type='text' value='" + $(this).parents('tr').find('td:eq(1)').text() + "' class='form-control' id='floatingInput' placeholder=' ' name='TipAdi'><label for='floatingInput'> Hesap Kart Tip Adı </label></div></form>");
+            $('#myModal .modal-footer').html("<button type='button' id='hesapTipGuncelle' class='btn btn-outline-success'>Update</button>");
+            hesapkarttiptanimlari.Guncelle();
+            $('#myModal').modal('show');
+        });
+        $('.hesapTipSilModal').click(function () {
+            $('#myModal .modal-body').html("<form><div class='form-floating mb-3'><input type='hidden' name='TipID' value='" + $(this).parents('tr').find('td:eq(0)').text() + "'><input type='text' disabled value='" + $(this).parents('tr').find('td:eq(1)').text() + "' class='form-control' id='floatingInput' placeholder=' ' name='TipAdi'><label for='floatingInput'> Hesap Kart Tip Adı </label></div></form>");
+            $('#myModal .modal-footer').html("<button type='button' id='hesapTipSil' class='btn btn-outline-danger'>Delete</button>");
+            hesapkarttiptanimlari.Sil();
+            $('#myModal').modal('show');
+        });
+</script>
