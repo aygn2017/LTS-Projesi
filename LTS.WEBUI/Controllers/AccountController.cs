@@ -16,18 +16,18 @@ namespace LTS.WEBUI.Controllers
     {
         private readonly UserManager<HesapUser> userManager;
         private readonly SignInManager<HesapUser> signInManager;
+        private readonly RoleManager<HesapRol> _roleManager;
         public AccountController(UserManager<HesapUser> userManager, SignInManager<HesapUser> signInManager)
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
         }
 
-
+        [HttpGet]
         public IActionResult Login()
         {
             return View(new LoginModel());
         }
-
 
         [HttpPost]
         public async Task<IActionResult> Login(LoginModel model)
@@ -342,5 +342,101 @@ namespace LTS.WEBUI.Controllers
 
             return Json(new { result = false });
         }
+
+        [HttpGet]
+        public IActionResult SifremiUnuttum()
+        {
+            return View(new KullanicilarDTO());
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SifremiUnuttum(KullanicilarDTO model)
+        {
+            var user = await userManager.FindByEmailAsync(model.Email);
+
+            if (user != null)
+            {
+                string resetToken = await userManager.GeneratePasswordResetTokenAsync(user);
+
+                StringBuilder mailbuilder = new StringBuilder();
+                mailbuilder.Append("<html>");
+                mailbuilder.Append("<head>");
+                mailbuilder.Append("<meta charset='" + "utf-8'" + " />");
+                mailbuilder.Append("<title>Şifremi Unuttum</title>");
+                mailbuilder.Append("</head>");
+                mailbuilder.Append("<body>");
+                mailbuilder.Append($"<p> Merhaba {user.UserName} </p><br/>");
+                mailbuilder.Append($"Yeni şifre oluşturmak için <a href='https://localhost:5001/Account/KullaniciSifreYenileme/?uid={user.Id}&code={resetToken}'>tıklayınız.</a>.<br/>");
+                mailbuilder.Append("</body>");
+                mailbuilder.Append("</html>");
+
+                EmailHelper helper = new EmailHelper();
+
+                bool isSend = helper.SendEmail(user.Email, mailbuilder.ToString());
+
+                if (isSend)
+                {
+                    return Json(new { result = true });
+                }
+                else
+                {
+                    return Json(new { result = false });
+                }
+            }
+            else
+            {
+                return Json(new { result = false });
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> KullaniciSifreYenileme(string uid, string code)
+        {
+            if (!string.IsNullOrEmpty(uid) && !string.IsNullOrEmpty(uid))
+            {
+                var user = await userManager.FindByIdAsync(uid);
+                if (user != null)
+                {
+                    KullaniciAktif model = new KullaniciAktif();
+                    model.UserId = uid;
+                    model.ResetCode = code;
+
+                    return View(model);
+                }
+            }
+
+            return RedirectToAction("Error", "Home");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> KullaniciSifreYenileme(KullaniciAktif model)
+        {
+            var user = await userManager.FindByIdAsync(model.UserId);
+            if (user != null && model.Password == model.RPassword)
+            {
+                model.ResetCode = model.ResetCode.Replace(' ', '+');
+
+                IdentityResult result = await userManager.ResetPasswordAsync(user, model.ResetCode, model.Password);
+
+                if (result.Succeeded)
+                {
+                    return Json(new { result = true });
+                }
+                else
+                {
+                    return Json(new { result = false });
+                }
+            }
+
+            return Json(new { result = false });
+        }
+
+        //[HttpGet]
+        //public async Task<PartialViewResult> RolleriListele()
+        //{
+          
+
+        //    return PartialView("~/Views/Shared/Components/KullaniciIslemleri/KullaniciIslemleri.cshtml", result);
+        //}
     }
 }

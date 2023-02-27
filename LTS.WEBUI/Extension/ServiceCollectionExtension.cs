@@ -15,7 +15,7 @@ namespace LTS.WEBUI.Extension
             services.AddDbContext<myDataContext>(opt => opt.UseSqlServer(Configuration.GetConnectionString("LTSIdentityDbContext")));
 
 
-            services.AddIdentity<HesapUser, IdentityRole>().AddEntityFrameworkStores<myDataContext>().
+            services.AddIdentity<HesapUser, HesapRol>().AddEntityFrameworkStores<myDataContext>().
             AddDefaultTokenProviders();
 
             services.Configure<IdentityOptions>(options =>

@@ -8,7 +8,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore;
 using lts.DTOS.Concrete;
 using Microsoft.Extensions.Configuration;
 
@@ -34,6 +33,8 @@ namespace lts.Data.Concrete.Context
         public DbSet<HesapKartTur> HesapKartTurs { get; set; }
 
         public DbSet<Kullanıcı> Kullanıcıs { get; set; }
+        public DbSet<Rol> Rols { get; set; }
+        public DbSet<KullaniciRol> KullaniciRols { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
