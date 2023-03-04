@@ -13,7 +13,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace lts.Data.Concrete.Context
 {
-    public class myDataContext : IdentityDbContext<HesapUser>
+    public class myDataContext : IdentityDbContext<HesapUser, HesapRol, string>
     {
         public myDataContext()
         {
@@ -33,8 +33,7 @@ namespace lts.Data.Concrete.Context
         public DbSet<HesapKartTur> HesapKartTurs { get; set; }
 
         public DbSet<Kullanıcı> Kullanıcıs { get; set; }
-        public DbSet<Rol> Rols { get; set; }
-        public DbSet<KullaniciRol> KullaniciRols { get; set; }
+
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

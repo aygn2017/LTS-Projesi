@@ -17,10 +17,11 @@ namespace LTS.WEBUI.Controllers
         private readonly UserManager<HesapUser> userManager;
         private readonly SignInManager<HesapUser> signInManager;
         private readonly RoleManager<HesapRol> _roleManager;
-        public AccountController(UserManager<HesapUser> userManager, SignInManager<HesapUser> signInManager)
+        public AccountController(UserManager<HesapUser> userManager, SignInManager<HesapUser> signInManager, RoleManager<HesapRol> roleManager)
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
+            _roleManager = roleManager;
         }
 
         [HttpGet]
@@ -431,12 +432,79 @@ namespace LTS.WEBUI.Controllers
             return Json(new { result = false });
         }
 
-        //[HttpGet]
-        //public async Task<PartialViewResult> RolleriListele()
-        //{
-          
+        [HttpGet]
+        public async Task<PartialViewResult> RolleriListele()
+        {
+            var result = await _roleManager.Roles.ToListAsync();
 
-        //    return PartialView("~/Views/Shared/Components/KullaniciIslemleri/KullaniciIslemleri.cshtml", result);
-        //}
+            return PartialView("~/Views/Shared/Components/RolIslemleri/RolIslemleri.cshtml", result);
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> RolKaydet(HesapRol model)
+        {
+            if (model.Name != null && model.Name != "")
+            {
+                IdentityResult result = await _roleManager.CreateAsync(new HesapRol { Id = Guid.NewGuid().ToString(), Name = model.Name, OlusturulmaTarihi = DateTime.Now, isActive = true, isDeleted = false });
+                if (result.Succeeded)
+                {
+                    return Json(new { result = true });
+                }
+            }
+
+            return Json(new { result = false });
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> RolGuncelle(HesapRol model)
+        {
+            if (model.Id != null && model.Id != "" && model.Name != null && model.Name != "")
+            {
+                HesapRol role = await _roleManager.FindByIdAsync(model.Id);
+                role.Name = model.Name;
+                IdentityResult result = await _roleManager.UpdateAsync(role);
+                if (result.Succeeded)
+                {
+                    return Json(new { result = true });
+                }
+            }
+
+            return Json(new { result = false });
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> RolSil(HesapRol model)
+        {
+            if (model.Id != null && model.Id != "")
+            {
+                HesapRol role = await _roleManager.FindByIdAsync(model.Id);
+                IdentityResult result = await _roleManager.DeleteAsync(role);
+
+                if (result.Succeeded)
+                {
+                    return Json(new { result = true });
+                }
+            }
+
+            return Json(new { result = false });
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> RolAktifPasif(string Id, bool aktifPasif)
+        {
+            if (Id != null && Id != "")
+            {
+                HesapRol role = await _roleManager.FindByIdAsync(Id);
+                role.isActive = aktifPasif;
+                IdentityResult result = await _roleManager.UpdateAsync(role);
+
+                if (result.Succeeded)
+                {
+                    return Json(new { result = true });
+                }
+            }
+
+            return Json(new { result = false });
+        }
     }
 }

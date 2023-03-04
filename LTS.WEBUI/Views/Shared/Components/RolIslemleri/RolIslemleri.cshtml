@@ -1,0 +1,71 @@
+﻿@model List<HesapRol>
+
+<div class="table-responsive">
+    <table id="tabloListele" class="table mytable mt-5 align-middle">
+        <thead>
+            <tr>
+                <th style="display:none;" scope="col">Id</th>
+                <th scope="col">#</th>
+                <th scope="col">Rol Adı</th>
+                <th scope="col">Oluşturulma Tarihi</th>
+                <th scope="col">Aktif</th>
+                <th scope="col">İşlemler</th>
+                <th scope="col"><button id="RolEkleModal" class="btn btn-outline-success">Ekle</button></th>
+            </tr>
+        </thead>
+        <tbody id="mytabletbody">
+            @{
+                int sira = 1;
+                foreach (var item in Model)
+                {
+                    <tr>
+                        <td style="display:none;">@item.Id</td>
+                        <td>@sira</td>
+                        <td>@item.Name</td>
+                        <td>@item.OlusturulmaTarihi</td>
+                        @if (item.isActive && !item.isDeleted){
+                            <td>
+                                <div class="form-check form-switch">
+                                  <input rolId="@item.Id" onclick="rolislemleri.RolAktifPasif(this)" checked class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault">
+                                </div>
+                            </td>
+                        }else{
+                            <td>
+                                <div class="form-check form-switch">
+                                  <input rolId="@item.Id" onclick="rolislemleri.RolAktifPasif(this)" class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault">
+                                </div>
+                            </td>
+                        }
+                        <td>
+                            <div class="btn-group">
+                                <button class="btn btn-outline-warning btnGuncelle RolGuncelleModal">Güncelle</button>
+                                <button class="btn btn-outline-danger btnSil RolSilModal">Sil</button>
+                            </div>
+                        </td>
+                    </tr>
+                    sira++;
+                }
+             }
+        </tbody>
+    </table>
+</div>
+<script>
+    $('#RolEkleModal').click(function () {
+        $('#myModal .modal-body').html("<form><div class='form-floating mb-3'><input type='text' class='form-control' id='floatingInput' placeholder=' ' name='Name'><label for='floatingInput'> Rol Adı </label></div></form>");
+        $('#myModal .modal-footer').html("<button type='button' id='RolEkle' class='btn btn-outline-success'>Save changes</button>");
+        rolislemleri.Ekle();
+        $('#myModal').modal('show');
+    });
+    $('.RolGuncelleModal').click(function () {
+        $('#myModal .modal-body').html("<form><div class='form-floating mb-3'><input type='hidden' name='Id' value='" + $(this).parents('tr').find('td:eq(0)').text() + "'><input type='text' value='" + $(this).parents('tr').find('td:eq(2)').text() + "' class='form-control' id='floatingInput' placeholder=' ' name='Name'><label for='floatingInput'> Rol Adı </label></div></form>");
+        $('#myModal .modal-footer').html("<button type='button' id='RolGuncelle' class='btn btn-outline-success'>Update</button>");
+        rolislemleri.Guncelle();
+        $('#myModal').modal('show');
+    });
+    $('.RolSilModal').click(function () {
+        $('#myModal .modal-body').html("<form><div class='form-floating mb-3'><input type='hidden' name='Id' value='" + $(this).parents('tr').find('td:eq(0)').text() + "'><input disabled type='text' value='" + $(this).parents('tr').find('td:eq(2)').text() + "' class='form-control' id='floatingInput' placeholder=' ' name='Name'><label for='floatingInput'> Rol Adı </label></div><div class='form-floating mb-3'><input disabled type='text' value='" + $(this).parents('tr').find('td:eq(3)').text() + "' class='form-control' id='floatingInput' placeholder=' ' name='OlusturulmaTarihi'><label for='floatingInput'> Oluşturulma Tarihi </label></div></form>");
+        $('#myModal .modal-footer').html("<button type='button' id='RolSil' class='btn btn-outline-danger'>Delete</button>");
+        rolislemleri.Sil();
+        $('#myModal').modal('show');
+    });
+</script>

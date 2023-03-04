@@ -1,6 +1,6 @@
 ﻿var rolislemleri = {
     listele: function () {
-        var page = location.origin + "/Account/KullanicilariListele";
+        var page = location.origin + "/Account/RolleriListele";
 
         $.ajax({
             type: "GET",
@@ -15,20 +15,19 @@
         });
     },
     Ekle: function () {
-        $('#KullaniciEkle').click(function () {
+        $('#RolEkle').click(function () {
 
             var data = decodeURIComponent($("#myModal .modal-body form").serialize());
 
             $.ajax({
-                url: location.origin + "/Account/KullaniciKaydet",
+                url: location.origin + "/Account/RolKaydet",
                 data: data,
                 type: "POST",
                 success: function (res) {
                     if (res.result) {
                         swal("Kayıt Başarılı!", "", "success");
-                        $("input[name='UserName']").val("");
-                        $("input[name='Email']").val("");
-                        kullaniciislemleri.listele();
+                        $("input[name='Name']").val("");
+                        rolislemleri.listele();
                     } else {
                         swal("Kayıt Başarısız!", "", "error");
                     }
@@ -40,20 +39,20 @@
         });
     },
     Guncelle: function () {
-        $('#KullaniciGuncelle').click(function () {
+        $('#RolGuncelle').click(function () {
 
             var data = decodeURIComponent($("#myModal .modal-body form").serialize());
 
             console.log(data)
 
             $.ajax({
-                url: location.origin + "/Account/KullaniciGuncelle",
+                url: location.origin + "/Account/RolGuncelle",
                 data: data,
                 type: "POST",
                 success: function (res) {
                     if (res.result) {
                         swal("Güncelleme Başarılı!", "", "success");
-                        kullaniciislemleri.listele();
+                        rolislemleri.listele();
                     } else {
                         swal("Güncelleme Başarısız!", "", "error");
                     }
@@ -64,18 +63,18 @@
         });
     },
     Sil: function () {
-        $('#KullaniciSil').click(function () {
+        $('#RolSil').click(function () {
 
             var data = decodeURIComponent($("#myModal .modal-body form").serialize());
 
             $.ajax({
-                url: location.origin + "/Account/KullaniciSil",
+                url: location.origin + "/Account/RolSil",
                 data: data,
                 type: "POST",
                 success: function (res) {
                     if (res.result) {
                         swal("Silme İşlemi Başarılı!", "", "success");
-                        kullaniciislemleri.listele();
+                        rolislemleri.listele();
                         $('#myModal').modal('hide');
                     } else {
                         swal("Silme İşlemi Başarısız!", "", "error");
@@ -84,6 +83,22 @@
                     alert("Hata :" + hata.status + " " + throwerror + " " + hata.responseText);
                 }
             });
+        });
+    },
+    RolAktifPasif: function (obj) {
+        $.ajax({
+            url: location.origin + "/Account/RolAktifPasif",
+            data: { Id: $(obj).attr("rolId"), aktifPasif: $(obj).is(':checked') },
+            type: "POST",
+            success: function (res) {
+                if (res.result) {
+                    rolislemleri.listele();
+                } else {
+                    swal("Beklenmeyen Bir Hata Oluştu!", "", "error");
+                }
+            }, error: function (hata, ajaxoptions, throwerror) {
+                alert("Hata :" + hata.status + " " + throwerror + " " + hata.responseText);
+            }
         });
     }
 }

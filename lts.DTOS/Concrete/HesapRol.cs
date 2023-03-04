@@ -7,8 +7,10 @@ using System.Threading.Tasks;
 
 namespace lts.DTOS.Concrete
 {
-    public class HesapRol : IdentityRole
+    public class HesapRol : IdentityRole<string>
     {
         public DateTime OlusturulmaTarihi { get; set; }
+        public bool isActive { get; set; }
+        public bool isDeleted { get; set; }
     }
 }

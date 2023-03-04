@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using lts.Data.Concrete.Context;
 
 namespace lts.Data.Migrations
 {
     [DbContext(typeof(myDataContext))]
-    partial class myDataContextModelSnapshot : ModelSnapshot
+    [Migration("20230304134828_rolSil")]
+    partial class rolSil
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -142,12 +144,6 @@ namespace lts.Data.Migrations
 
                     b.Property<DateTime>("OlusturulmaTarihi")
                         .HasColumnType("datetime2");
-
-                    b.Property<bool>("isActive")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("isDeleted")
-                        .HasColumnType("bit");
 
                     b.HasKey("Id");
 
