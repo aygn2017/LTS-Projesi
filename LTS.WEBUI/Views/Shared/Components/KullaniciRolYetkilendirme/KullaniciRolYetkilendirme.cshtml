@@ -25,11 +25,6 @@
         </table>
     </div>
 </div>
-
-
-
-
-
 <script>
     $('#roller').change(function(e) {
         let value = $(this).val();
@@ -38,24 +33,18 @@
 
             $('#example').DataTable({
                 "bDestroy": true, 
-                     columns: [
+                    columns: [
                         { "data": "tc" },
                         { "data": "userName" },
                         { "data": "email" },
                     ],
                 "ajax": {
-                    
                     'type': 'POST',
                     'url': '/Account/RolKullaniciListele',
                     'data': {
                        rolId: value,
                     },
                     dataSrc: function ( e ) {
-                       
-                    
-                            console.log(e)
-              
-
                         return e;
                     }
                 },
