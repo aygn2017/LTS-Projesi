@@ -1,0 +1,10 @@
+﻿@model List<HesapUser>
+
+<label>Kullanıcılar:</label>
+<select name="kullanicilar" class="form-select" multiple aria-label="multiple select example">
+  <option value="" selected>Open this select menu</option>
+  @foreach (var item in Model)
+  {
+     <option value="@item.Id">@item.UserName</option>   
+  }
+</select>

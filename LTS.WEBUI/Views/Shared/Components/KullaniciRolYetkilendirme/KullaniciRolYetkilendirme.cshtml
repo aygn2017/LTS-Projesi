@@ -1,0 +1,74 @@
+﻿@model KullaniciRolViewModel
+
+
+<div class="row">
+    <div class="col-md-12 pt-5">
+        <select id="roller" class="mt-5 form-select form-select-sm" aria-label=".form-select-sm example">
+            <option value="" selected>Open this select menu</option>
+            @foreach (var item in Model.Roller)
+            {
+                <option value="@item.Id">@item.Name</option>
+            }
+        </select>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12 pt-5">
+        <table id="example" class="display" style="width:100%">
+            <thead>
+                <tr>
+                    <th>T.C</th>
+                    <th>Kullanıcı Adı</th>
+                    <th>Email</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+</div>
+
+
+
+
+
+<script>
+    $('#roller').change(function(e) {
+        let value = $(this).val();
+
+        if(value != ""){
+
+            $('#example').DataTable({
+                "bDestroy": true, 
+                     columns: [
+                        { "data": "tc" },
+                        { "data": "userName" },
+                        { "data": "email" },
+                    ],
+                "ajax": {
+                    
+                    'type': 'POST',
+                    'url': '/Account/RolKullaniciListele',
+                    'data': {
+                       rolId: value,
+                    },
+                    dataSrc: function ( e ) {
+                       
+                    
+                            console.log(e)
+              
+
+                        return e;
+                    }
+                },
+                dom: 'B<"clear">lfrtip',
+                buttons: [
+                    {
+                        text: 'Rol Ata',
+                        action: function ( e, dt, node, config ) {
+                            kullanicirolyetkilendirme.kullanicirollistele(`${value}`);
+                        }
+                    }
+                ]
+            });
+        }
+    });
+</script>

@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -502,6 +503,70 @@ namespace LTS.WEBUI.Controllers
                 {
                     return Json(new { result = true });
                 }
+            }
+
+            return Json(new { result = false });
+        }
+
+        [HttpGet]
+        public async Task<PartialViewResult> KullaniciRolListele()
+        {
+            var result = await _roleManager.Roles.ToListAsync();
+
+            KullaniciRolViewModel kullaniciRolViewModel = new KullaniciRolViewModel()
+            {
+                Roller = result
+            };
+
+            return PartialView("~/Views/Shared/Components/KullaniciRolYetkilendirme/KullaniciRolYetkilendirme.cshtml", kullaniciRolViewModel);
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> RolKullaniciListele(string rolId)
+        {
+            if (rolId != null && rolId != "")
+            {
+                var roleName = await _roleManager.Roles.Where(x => x.Id == rolId).Select(x => x.Name).FirstOrDefaultAsync();
+                var users = await userManager.GetUsersInRoleAsync(roleName);
+
+                if (users.Count > 0)
+                {
+                    return Json(users.Select(x => new
+                    {
+                        Tc = x.Tc,
+                        UserName = x.UserName,
+                        Email = x.Email
+                    }).ToList());
+                }
+            }
+
+            return Json(null);
+        }
+
+        [HttpGet]
+        public async Task<PartialViewResult> RolKullanicilariListele()
+        {
+            var result = await userManager.Users.ToListAsync();
+
+            return PartialView("~/Views/Shared/Components/KullaniciRolYetkilendirme/RolAtama.cshtml", result);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> KullaniciRolAta(string rolId, List<string> usersId)
+        {
+            if (rolId != null && rolId != "" && usersId.Count > 0)
+            {
+
+                List<HesapUser> users = await userManager.Users.Where(x=> usersId.Contains(x.Id)).ToListAsync();
+                var roleName = await _roleManager.Roles.Where(x => x.Id == rolId).Select(x=>x.Name).FirstOrDefaultAsync();
+              
+                foreach (var item in users)
+                {
+                    await userManager.AddToRoleAsync(item, roleName);
+                }
+
+                return Json(new { result = true });
             }
 
             return Json(new { result = false });
